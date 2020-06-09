@@ -1,0 +1,110 @@
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title field choice">
+        <input type="radio"
+               name="payment[method]"
+               class="radio"
+               data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()" />
+        <label class="label" data-bind="attr: {'for': getCode()}">
+            <img data-bind="attr: {src: getPaymentAcceptanceMarkSrc(), alt: $t('Acceptance Mark')}" class="payment-icon"/>
+            <!--<span data-bind="text: getTitle()"></span>-->
+        </label>
+    </div>
+    <div class="payment-method-content">
+        <!-- ko foreach: getRegion('messages') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+        <fieldset class="fieldset" data-bind='attr: {id: "payment_form_" + getCode()}'>            
+
+            <div class="payment-method-billing-address">
+                <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+                <!-- ko template: getTemplate() --><!-- /ko -->
+                <!--/ko-->
+            </div>
+        </fieldset>
+        <form class="form" data-bind="attr: {'id': getCode() + '-form'}">
+            <fieldset data-bind="attr: {class: 'fieldset payment items ccard ' + getCode(), id: 'payment_form_' + getCode()}">
+
+                <div class="grand-total">
+                    <strong><!-- ko i18n: 'Transaction Amount: MVR '--><!-- /ko --></strong>
+                    <span data-bind="text: getGrandTotal()"></span> 
+                </div>
+                <div class="field _required mobile">
+                    <label data-bind="attr: {for: getCode() + '_mobile'}" class="label">
+                        <span><!-- ko i18n: 'Dhiraagupay Number'--><!-- /ko --></span>
+                    </label>
+                    <input type="text" name="payment[mobile]" data-validate="{'required-entry':true}" data-bind="attr: {'id': getCode()+'_mobile'}" class="input-text" />
+                </div>
+                <div class="field _required otp" style="display: none;">
+                    <label data-bind="attr: {for: getCode() + '_otp'}" class="label">
+                        <span><!-- ko i18n: 'OTP'--><!-- /ko --></span>
+                    </label>
+                    <input type="text" name="payment[otp]" data-validate="{'required-entry':true}" data-bind="attr: {'id': getCode()+'_otp'}" class="input-text" />
+                </div>
+                <div id="getotpbymobile">
+                    <button class="action primary"
+                        type="button"
+                         data-bind="click: sendOtp, attr: {'id': getCode()+'_otpget'}" >
+                    <span data-bind="i18n: 'GET OTP'"></span>
+                </button>
+                </div> 
+            </fieldset>
+        </form>
+        <div class="checkout-agreements-block">
+            <!-- ko foreach: $parent.getRegion('before-place-order') -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+
+        </div>
+        <div class="actions-toolbar" data-bind="attr: {'id': getCode() + '-actions-toolbar'}" style="display: none;">
+            <div class="primary">
+                <button class="action primary checkout"
+                        type="submit"
+                        data-bind="click: placeOrder, enable: (getCode() == isChecked())"
+                        disabled>
+                    <span data-bind="i18n: 'Place Order'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+require([
+    'jquery'    
+], function ($) {
+    
+        jQuery(document).on('click','#dhiraagupay_otpget.action',function(){
+
+           // var otpCheckUrl= getPaymentAcceptanceMarkSrc();
+              var mobile = jQuery('#dhiraagupay_mobile').val(); 
+                  if(mobile.length==0){
+                    alert('Please enter dhiraagupay number!!!');
+                     return false;
+                  }
+                  if(mobile.length<7){
+                    alert('Please enter valid dhiraagupay number!');
+                    return false;
+                  }
+                jQuery.ajax({
+                    url : '/dhiraagupay/otp/requestforotp',
+                    data : {"mobile":mobile},
+                    type : "POST",
+                    success : function (response) {
+                        if(response.price.length != 0){                            
+                                                   
+                        }else{
+                            
+                        }
+                       
+                    }
+                })
+           
+    });
+});
+</script>
