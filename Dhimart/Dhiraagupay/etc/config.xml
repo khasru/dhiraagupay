@@ -11,9 +11,9 @@
             <dhiraagupay>
                 <active>1</active>
                 <model>Dhimart\Dhiraagupay\Model\DhiraagupayPayment</model>
-                <payment_action>authorize_capture</payment_action>
-                <title>Dhiraagu pay</title>                            
-                <order_status>pending_payment</order_status>
+                <payment_action>authorize</payment_action>
+                <title>Dhiraagu pay</title>
+                <order_status>pending</order_status>
             </dhiraagupay>
         </payment>
     </default>
